@@ -30,14 +30,22 @@ jobs:
         mingw32-make
 
     - name: 4. windeployqt로 배포 폴더 만들기
-      shell: bash # 여기서도 bash 사용!
+      shell: bash
       run: |
         cd build
-        mkdir deploy
-        # 완성된 exe 파일의 이름을 정확히 지정해서 복사 (release 폴더 안이거나 루트에 있거나 둘 중 하나)
-        cp release/glamour_client.exe deploy/ || cp glamour_client.exe deploy/
-        # windeployqt가 폴더가 아닌 exe 파일을 직접 타겟팅하도록 수정
-        windeployqt deploy/glamour_client.exe
+        mkdir -p deploy
+        
+        # 1. 이름이 무엇이든 방금 만들어진 .exe 파일을 찾아서 deploy 폴더로 복사
+        find . -name "*.exe" -type f -exec cp {} deploy/ \;
+        
+        cd deploy
+        
+        # 2. 복사된 .exe 파일의 실제 이름을 알아내서 변수에 저장
+        EXE_FILE=$(ls *.exe | head -n 1)
+        echo "발견된 실행 파일: $EXE_FILE"
+        
+        # 3. 그 파일에 windeployqt 적용
+        windeployqt $EXE_FILE
 
     - name: 5. 완성된 폴더를 Zip 파일로 깃허브에 업로드
       uses: actions/upload-artifact@v4
