@@ -1,0 +1,11 @@
+서버 여는 방법
+
+source venv/bin/activate
+
+uvicorn ai_server:app --port 8001 --reload
+
+
+
+
+
+
