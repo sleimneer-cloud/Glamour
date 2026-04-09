@@ -1,0 +1,12 @@
+# Qt Creator
+*.pro.user
+*.pro.user.*
+
+# Qt build and generated files
+build/
+bin/
+Makefile
+.qmake.stash
+
+# OS Specific
+.DS_Store
