@@ -1,0 +1,45 @@
+name: Windows Release Build
+
+on:
+  push:
+    branches: [ "client" ] # 이제 client 브랜치 코드가 수정될 때마다 돕니다!
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: 1. 저장소 코드 가져오기
+      uses: actions/checkout@v4
+
+    - name: 2. 윈도우용 Qt 및 컴파일러 설치
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.4.2'
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_mingw'
+
+    - name: 3. 프로젝트 빌드 (qmake 기준)
+      run: |
+        mkdir build
+        cd build
+        # 헷갈리지 않게 파일명을 직접 지정해줍니다!
+        qmake ../glamour_client.pro "CONFIG+=release" 
+        mingw32-make
+
+    - name: 4. windeployqt로 배포 폴더 만들기
+      run: |
+        cd build
+        mkdir deploy
+        # 완성된 exe 파일을 복사
+        cp release/*.exe deploy/
+        cd deploy
+        windeployqt .
+
+    - name: 5. 완성된 폴더를 Zip 파일로 깃허브에 업로드
+      uses: actions/upload-artifact@v4
+      with:
+        name: Glamour_Windows_Test_Version
+        path: build/deploy/
