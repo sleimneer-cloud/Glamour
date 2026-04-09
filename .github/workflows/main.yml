@@ -3,7 +3,7 @@ name: Windows Release Build
 # 언제 이 작업이 실행될지 정의합니다.
 on:
   push:
-    branches: [ "main", "master" ] # 코드가 푸시될 때 자동 실행
+    branches: [ "main", "master", "for-Windows"  ] # 코드가 푸시될 때 자동 실행
   workflow_dispatch: # 깃허브 웹에서 수동으로 버튼을 눌러 실행할 수 있게 함
 
 jobs:
