@@ -4,6 +4,9 @@
 #include <QUuid>
 #include <QSettings>
 
+// 서버 기본 주소 (추후 도메인으로 변경 시 이곳만 수정하면 됩니다)
+const QString BASE_URL = "http://43.201.133.91:8000";
+
 NetworkService::NetworkService(QObject *parent) : QObject(parent)
 {
     networkManager = new QNetworkAccessManager(this);
@@ -29,7 +32,7 @@ void NetworkService::requestFeedback(int userId, const QString &text, const QStr
     QJsonDocument doc(json);
     QByteArray data = doc.toJson();
 
-    QUrl url("http://43.201.133.91:8000/process-text");
+    QUrl url(BASE_URL + "/process-text");
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
@@ -45,7 +48,7 @@ void NetworkService::sendRetryCount(int logId, int retryCount)
     QJsonDocument retryDoc(retryJson);
     QByteArray retryData = retryDoc.toJson();
 
-    QUrl retryUrl("http://127.0.0.1:8000/update-retries");
+    QUrl retryUrl(BASE_URL + "/update-retries");
     QNetworkRequest retryReq(retryUrl);
     retryReq.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
