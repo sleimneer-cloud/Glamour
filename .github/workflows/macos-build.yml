@@ -16,7 +16,8 @@ jobs:
     - name: 2. 맥용 Qt 설치
       uses: jurplel/install-qt-action@b7840a6733f49e2a39c4355260d2375063d39b61 # v3
       with:
-        version: '6.4.2'
+        # 6.4.2는 최신 Xcode SDK에 없는 AGL 프레임워크를 찾다가 링크 실패함(Qt 6.5+에서 해결된 이슈)
+        version: '6.6.3'
         host: 'mac'
         target: 'desktop'
 
