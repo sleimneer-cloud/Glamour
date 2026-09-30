@@ -1,0 +1,61 @@
+name: Linux Release Build
+
+on:
+  push:
+    branches: [ "client" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 1. 저장소 코드 가져오기
+      uses: actions/checkout@v4
+
+    - name: 2. 리눅스용 Qt 설치
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.4.2'
+        host: 'linux'
+        target: 'desktop'
+
+    - name: 3. 프로젝트 빌드 (qmake 기준)
+      run: |
+        mkdir build
+        cd build
+        qmake ../glamour_client.pro "CONFIG+=release"
+        make -j$(nproc)
+
+    - name: 4. AppImage로 패키징 (Qt 안 깔린 리눅스에서도 실행되게)
+      run: |
+        cd build
+        BIN_FILE=$(find bin -maxdepth 1 -type f -executable | head -n 1)
+        BIN_NAME=$(basename "$BIN_FILE")
+        echo "발견된 실행 파일: $BIN_NAME"
+
+        mkdir -p AppDir/usr/bin AppDir/usr/share/applications AppDir/usr/share/icons/hicolor/256x256/apps
+        cp "$BIN_FILE" AppDir/usr/bin/
+        cp ../resources/Glamour.png AppDir/usr/share/icons/hicolor/256x256/apps/glamour.png
+
+        {
+          echo "[Desktop Entry]"
+          echo "Type=Application"
+          echo "Name=Glamour"
+          echo "Exec=$BIN_NAME"
+          echo "Icon=glamour"
+          echo "Categories=Utility;"
+        } > AppDir/usr/share/applications/glamour.desktop
+
+        # ponytail: linuxdeployqt의 "continuous"(항상 최신) 빌드를 그대로 씀 - 재현성 필요해지면 특정 버전으로 고정
+        wget -q "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt.AppImage
+        chmod +x linuxdeployqt.AppImage
+        # CI 환경엔 FUSE가 없는 경우가 많아서 마운트 대신 압축 해제 후 직접 실행
+        ./linuxdeployqt.AppImage --appimage-extract
+        squashfs-root/AppRun AppDir/usr/share/applications/glamour.desktop -appimage
+
+    - name: 5. 완성된 AppImage를 깃허브에 업로드
+      uses: actions/upload-artifact@v4
+      with:
+        name: Glamour_Linux_AppImage
+        path: build/*.AppImage

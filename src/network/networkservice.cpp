@@ -5,7 +5,7 @@
 #include <QSettings>
 
 // 서버 기본 주소 (추후 도메인으로 변경 시 이곳만 수정하면 됩니다)
-const QString BASE_URL = "http://43.201.133.91:8000";
+const QString BASE_URL = "https://glamour.plusxdev.com";
 
 NetworkService::NetworkService(QObject *parent) : QObject(parent)
 {
