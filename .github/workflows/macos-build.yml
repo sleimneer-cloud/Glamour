@@ -26,6 +26,9 @@ jobs:
         mkdir build
         cd build
         qmake ../glamour_client.pro "CONFIG+=release"
+        # Qt mkspec이 .pro 처리가 끝난 뒤(default_post.prf) AGL을 추가해서 .pro 안에서는 못 막음 -
+        # 최신 Xcode SDK엔 없는 프레임워크라 생성된 Makefile에서 직접 제거
+        sed -i '' 's/-framework AGL//g' Makefile
         make -j$(sysctl -n hw.ncpu)
 
     - name: 4. macdeployqt로 dmg 패키징 (Qt 안 깔린 맥에서도 실행되게)
