@@ -30,7 +30,7 @@ jobs:
     - name: 4. AppImage로 패키징 (Qt 안 깔린 리눅스에서도 실행되게)
       run: |
         cd build
-        BIN_FILE=$(find bin -maxdepth 1 -type f -executable | head -n 1)
+        BIN_FILE=$(find build/bin -maxdepth 1 -type f -executable | head -n 1)
         BIN_NAME=$(basename "$BIN_FILE")
         echo "발견된 실행 파일: $BIN_NAME"
 
