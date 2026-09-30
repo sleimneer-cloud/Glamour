@@ -38,3 +38,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     resources/res.qrc
+
+# 최신 Xcode SDK에서 AGL(레거시 OpenGL API) 프레임워크가 제거되어 링크 실패함.
+# 이 앱은 AGL을 직접 쓰지 않으므로 Qt가 기본으로 붙이는 링크 목록에서 제외.
+macx: LIBS -= -framework AGL

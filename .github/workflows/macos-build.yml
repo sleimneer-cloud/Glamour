@@ -25,8 +25,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        # 최신 Xcode SDK에서 제거된 AGL 프레임워크를 Qt mkspec이 습관적으로 링크 목록에 넣어서 실패함 - 안 쓰는 프레임워크라 빼고 링크
-        qmake ../glamour_client.pro "CONFIG+=release" "LIBS-=-framework AGL"
+        qmake ../glamour_client.pro "CONFIG+=release"
         make -j$(sysctl -n hw.ncpu)
 
     - name: 4. macdeployqt로 dmg 패키징 (Qt 안 깔린 맥에서도 실행되게)
