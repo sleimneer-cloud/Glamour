@@ -1,0 +1,41 @@
+name: macOS Release Build
+
+on:
+  push:
+    branches: [ "client" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: 1. 저장소 코드 가져오기
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+    - name: 2. 맥용 Qt 설치
+      uses: jurplel/install-qt-action@b7840a6733f49e2a39c4355260d2375063d39b61 # v3
+      with:
+        version: '6.4.2'
+        host: 'mac'
+        target: 'desktop'
+
+    - name: 3. 프로젝트 빌드 (qmake 기준)
+      run: |
+        mkdir build
+        cd build
+        qmake ../glamour_client.pro "CONFIG+=release"
+        make -j$(sysctl -n hw.ncpu)
+
+    - name: 4. macdeployqt로 dmg 패키징 (Qt 안 깔린 맥에서도 실행되게)
+      run: |
+        cd build
+        APP_PATH=$(find build/bin -maxdepth 1 -name "*.app" -type d | head -n 1)
+        echo "발견된 앱 번들: $APP_PATH"
+        macdeployqt "$APP_PATH" -dmg
+
+    - name: 5. 완성된 dmg를 깃허브에 업로드
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      with:
+        name: Glamour_macOS_dmg
+        path: build/build/bin/*.dmg
