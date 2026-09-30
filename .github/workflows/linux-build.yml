@@ -12,10 +12,10 @@ jobs:
 
     steps:
     - name: 1. 저장소 코드 가져오기
-      uses: actions/checkout@v4
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
     - name: 2. 리눅스용 Qt 설치
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@b7840a6733f49e2a39c4355260d2375063d39b61 # v3
       with:
         version: '6.4.2'
         host: 'linux'
@@ -56,7 +56,7 @@ jobs:
         squashfs-root/AppRun AppDir/usr/share/applications/glamour.desktop -appimage
 
     - name: 5. 완성된 AppImage를 깃허브에 업로드
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
       with:
         name: Glamour_Linux_AppImage
         path: build/*.AppImage
