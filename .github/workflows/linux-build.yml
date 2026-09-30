@@ -7,7 +7,8 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # linuxdeployqt는 가장 오래된 지원 glibc(Ubuntu 22.04)에서 빌드해야 함 - 최신 러너는 호환성 에러 발생
+    runs-on: ubuntu-22.04
 
     steps:
     - name: 1. 저장소 코드 가져오기
